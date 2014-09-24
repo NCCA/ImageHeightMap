@@ -3,13 +3,10 @@
 
 This demo shows how to read in an image and create terrain from it by using one of the channels as the height of the vertex in the y.
 
-The following images are included
-
-![alt tag](https://github.com/NCCA/ImageHeightMap/blob/master/textures/FractalMap.bmp)
+The program requires the image name to be passed on the command line (or within Qt Creator) The following images are in the textures directory.
 
 ![alt tag](https://github.com/NCCA/ImageHeightMap/blob/master/textures/FractalMapC.bmp)
 
-![alt tag](https://github.com/NCCA/ImageHeightMap/blob/master/textures/FractalMapS.bmp)
 
 ![alt tag](https://github.com/NCCA/ImageHeightMap/blob/master/textures/MountainBig.bmp)
 
