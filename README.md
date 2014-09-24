@@ -7,6 +7,9 @@ The following images are included
 
 ![alt tag](https://github.com/NCCA/ImageHeightMap/blob/master/textures/FractalMap.bmp)
 
+![alt tag](https://github.com/NCCA/ImageHeightMap/blob/master/textures/FractalMapC.bmp)
 
+![alt tag](https://github.com/NCCA/ImageHeightMap/blob/master/textures/FractalMapS.bmp)
 
+![alt tag](https://github.com/NCCA/ImageHeightMap/blob/master/textures/MountainBig.bmp)
 
