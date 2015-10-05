@@ -10,3 +10,6 @@ The program requires the image name to be passed on the command line (or within 
 
 ![alt tag](https://github.com/NCCA/ImageHeightMap/blob/master/textures/MountainBig.bmp)
 
+
+
+Note this branch is an older version and will not be maintained as it uses the old OpenGL widget
