@@ -171,8 +171,8 @@ void NGLScene::initializeGL()
 
   shader->createShaderProgram("ColourShader");
 
-  shader->attachShader("ColourVertex",ngl::VERTEX);
-  shader->attachShader("ColourFragment",ngl::FRAGMENT);
+  shader->attachShader("ColourVertex",ngl::ShaderType::VERTEX);
+  shader->attachShader("ColourFragment",ngl::ShaderType::FRAGMENT);
   shader->loadShaderSource("ColourVertex","shaders/ColourVert.glsl");
   shader->loadShaderSource("ColourFragment","shaders/ColourFrag.glsl");
 
