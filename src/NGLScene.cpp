@@ -37,12 +37,12 @@ NGLScene::~NGLScene()
   std::cout<<"Shutting down NGL, removing VAO's and Shaders\n";
 }
 
-void NGLScene::resizeGL(int _w, int _h)
+void NGLScene::resizeGL(QResizeEvent *_event)
 {
-  glViewport(0,0,_w,_h);
+  m_width=_event->size().width()*devicePixelRatio();
+  m_height=_event->size().height()*devicePixelRatio();
   // now set the camera size values as the screen size has changed
-  m_cam->setShape(45,(float)_w/_h,0.05,350);
-  update();
+  m_cam.setShape(45.0f,(float)width()/height(),0.05f,350.0f);
 }
 
 
@@ -159,10 +159,10 @@ void NGLScene::initializeGL()
   ngl::Vec3 to(0,0,0);
   ngl::Vec3 up(0,1,0);
 
-  m_cam= new ngl::Camera(from,to,up);
+  m_cam.set(from,to,up);
   // set the shape using FOV 45 Aspect Ratio based on Width and Height
   // The final two are near and far clipping planes of 0.5 and 10
-  m_cam->setShape(45,(float)720.0/576.0,0.001,150);
+  m_cam.setShape(45,(float)720.0/576.0,0.001,150);
 
   // now to load the shader and set the values
   // grab an instance of shader manager
@@ -185,12 +185,7 @@ void NGLScene::initializeGL()
   shader->autoRegisterUniforms("ColourShader");
   (*shader)["ColourShader"]->use();
 
-
   genGridPoints(40,40);
-  // as re-size is not explicitly called we need to do this.
-  glViewport(0,0,width(),height());
-
-
 }
 
 
@@ -198,6 +193,7 @@ void NGLScene::paintGL()
 {
   // clear the screen and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glViewport(0,0,m_width,m_height);
   // Rotation based on the mouse position for our global transform
   ngl::Mat4 rotX;
   ngl::Mat4 rotY;
@@ -214,7 +210,7 @@ void NGLScene::paintGL()
   (*shader)["ColourShader"]->use();
 
   ngl::Mat4 MVP;
-  MVP=m_mouseGlobalTX*m_cam->getVPMatrix();
+  MVP=m_mouseGlobalTX*m_cam.getVPMatrix();
 
   shader->setRegisteredUniform("MVP",MVP);
 
