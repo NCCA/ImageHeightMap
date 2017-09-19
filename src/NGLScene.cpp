@@ -191,7 +191,7 @@ void NGLScene::paintGL()
   ngl::Mat4 MVP;
   MVP=m_mouseGlobalTX*m_cam.getVPMatrix();
 
-  shader->setRegisteredUniform("MVP",MVP);
+  shader->setUniform("MVP",MVP);
 
   // bind our VAO
   glBindVertexArray(m_vaoID);
