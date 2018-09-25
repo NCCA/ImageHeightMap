@@ -2,10 +2,7 @@
 #include <QGuiApplication>
 
 #include "NGLScene.h"
-#include <ngl/Camera.h>
-#include <ngl/Light.h>
 #include <ngl/Transformation.h>
-#include <ngl/Material.h>
 #include <ngl/NGLInit.h>
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
@@ -38,8 +35,8 @@ void NGLScene::genGridPoints(ngl::Real _width, ngl::Real _depth )
   float dStep=static_cast<float>(_depth)/imageHeight;
   // now we assume that the grid is centered at 0,0,0 so we make
   // it flow from -w/2 -d/2
-  float xPos=-(_width/2.0);
-  float zPos=-(_depth/2.0);
+  float xPos=-(_width/2.0f);
+  float zPos=-(_depth/2.0f);
   // now loop from top left to bottom right and generate points
   std::vector <ngl::Vec3> gridPoints;
 
@@ -49,7 +46,7 @@ void NGLScene::genGridPoints(ngl::Real _width, ngl::Real _depth )
     {
       // grab the colour and use for the Y (height) only use the red channel
       QColor c(image.pixel(x,z));
-      gridPoints.push_back(ngl::Vec3(xPos,c.redF()*4,zPos));
+      gridPoints.push_back(ngl::Vec3(xPos,c.redF()*4.0f,zPos));
       // now store the colour as well
       gridPoints.push_back(ngl::Vec3(c.redF(),c.greenF(),c.blueF()));
       // calculate the new position
@@ -58,13 +55,13 @@ void NGLScene::genGridPoints(ngl::Real _width, ngl::Real _depth )
     // now increment to next z row
     zPos+=dStep;
     // we need to re-set the xpos for new row
-    xPos=-(_width/2.0);
+    xPos=-(_width/2.0f);
   }
 
   std::vector <GLuint> indices;
   // some unique index value to indicate we have finished with a row and
   // want to draw a new one
-  GLuint restartFlag=imageWidth*imageHeight+9999;
+  GLuint restartFlag=imageWidth*imageHeight+9999u;
 
 
   for(int z=0; z<imageHeight; ++z)
@@ -138,10 +135,10 @@ void NGLScene::initializeGL()
   ngl::Vec3 to(0,0,0);
   ngl::Vec3 up(0,1,0);
 
-  m_cam.set(from,to,up);
+  m_view=ngl::lookAt(from,to,up);
   // set the shape using FOV 45 Aspect Ratio based on Width and Height
   // The final two are near and far clipping planes of 0.5 and 10
-  m_cam.setShape(45,(float)720.0/576.0,0.001,150);
+  m_project=ngl::perspective(45,720.0f/576.0f,0.001f,150);
 
   // now to load the shader and set the values
   // grab an instance of shader manager
@@ -189,7 +186,7 @@ void NGLScene::paintGL()
   (*shader)["ColourShader"]->use();
 
   ngl::Mat4 MVP;
-  MVP=m_cam.getVPMatrix()*m_mouseGlobalTX;
+  MVP=m_project*m_view*m_mouseGlobalTX;
 
   shader->setUniform("MVP",MVP);
 
@@ -202,7 +199,7 @@ void NGLScene::paintGL()
 
 void NGLScene::resizeGL( int _w, int _h )
 {
-  m_cam.setShape( 45.0f, static_cast<float>( _w ) / _h, 0.05f, 350.0f );
+  m_project=ngl::perspective( 45.0f, static_cast<float>( _w ) / _h, 0.05f, 350.0f );
   m_win.width  = static_cast<int>( _w * devicePixelRatio() );
   m_win.height = static_cast<int>( _h * devicePixelRatio() );
 }
