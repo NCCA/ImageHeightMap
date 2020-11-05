@@ -120,7 +120,7 @@ void NGLScene::initializeGL()
 {
   // we must call this first before any other GL commands to load and link the
   // gl commands from the lib, if this is not done program will crash
-  ngl::NGLInit::instance();
+  ngl::NGLInit::initialize();
 
   glClearColor(0.4f, 0.4f, 0.4f, 1.0f);			   // Grey Background
   // enable depth testing for drawing
@@ -140,26 +140,22 @@ void NGLScene::initializeGL()
   // The final two are near and far clipping planes of 0.5 and 10
   m_project=ngl::perspective(45,720.0f/576.0f,0.001f,150);
 
-  // now to load the shader and set the values
-  // grab an instance of shader manager
-  ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-  // load a frag and vert shaders
 
-  shader->createShaderProgram("ColourShader");
+  ngl::ShaderLib::createShaderProgram("ColourShader");
 
-  shader->attachShader("ColourVertex",ngl::ShaderType::VERTEX);
-  shader->attachShader("ColourFragment",ngl::ShaderType::FRAGMENT);
-  shader->loadShaderSource("ColourVertex","shaders/ColourVert.glsl");
-  shader->loadShaderSource("ColourFragment","shaders/ColourFrag.glsl");
+  ngl::ShaderLib::attachShader("ColourVertex",ngl::ShaderType::VERTEX);
+  ngl::ShaderLib::attachShader("ColourFragment",ngl::ShaderType::FRAGMENT);
+  ngl::ShaderLib::loadShaderSource("ColourVertex","shaders/ColourVert.glsl");
+  ngl::ShaderLib::loadShaderSource("ColourFragment","shaders/ColourFrag.glsl");
 
-  shader->compileShader("ColourVertex");
-  shader->compileShader("ColourFragment");
-  shader->attachShaderToProgram("ColourShader","ColourVertex");
-  shader->attachShaderToProgram("ColourShader","ColourFragment");
+  ngl::ShaderLib::compileShader("ColourVertex");
+  ngl::ShaderLib::compileShader("ColourFragment");
+  ngl::ShaderLib::attachShaderToProgram("ColourShader","ColourVertex");
+  ngl::ShaderLib::attachShaderToProgram("ColourShader","ColourFragment");
 
-  shader->linkProgramObject("ColourShader");
-  shader->autoRegisterUniforms("ColourShader");
-  (*shader)["ColourShader"]->use();
+  ngl::ShaderLib::linkProgramObject("ColourShader");
+  ngl::ShaderLib::autoRegisterUniforms("ColourShader");
+  ngl::ShaderLib::use("ColourShader");
 
   genGridPoints(40,40);
 }
@@ -182,13 +178,12 @@ void NGLScene::paintGL()
   m_mouseGlobalTX.m_m[3][0] = m_modelPos.m_x;
   m_mouseGlobalTX.m_m[3][1] = m_modelPos.m_y;
   m_mouseGlobalTX.m_m[3][2] = m_modelPos.m_z;
-  ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-  (*shader)["ColourShader"]->use();
+  ngl::ShaderLib::use("ColourShader");
 
   ngl::Mat4 MVP;
   MVP=m_project*m_view*m_mouseGlobalTX;
 
-  shader->setUniform("MVP",MVP);
+  ngl::ShaderLib::setUniform("MVP",MVP);
 
   // bind our VAO
   glBindVertexArray(m_vaoID);
